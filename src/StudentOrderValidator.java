@@ -10,40 +10,45 @@ public class StudentOrderValidator {
 
     private static void checkAll() {
         StudentOrder so = readStudentOrder();
-
-        AnswerCityRegister cityAnswer = checkCityRegister(so);
-        AnswerWedding wedAnswer = checkWedding(so);
-        AnswerChildren childAnswer = checkChildren(so);
-        AnswerStudent studentAnswer = checkStudent(so);
-        sendMail(so);
+        while (true) {
+            if (so == null) {
+                break;
+            }
+            AnswerCityRegister cityAnswer = checkCityRegister(so);
+            if (!cityAnswer.success) {
+                continue;
+            }
+            AnswerWedding wedAnswer = checkWedding(so);
+            AnswerChildren childAnswer = checkChildren(so);
+            AnswerStudent studentAnswer = checkStudent(so);
+            sendMail(so);
+        }
     }
 
+    //проверки
     static StudentOrder readStudentOrder() {
-        return new StudentOrder();
+        new StudentOrder();
+        return null;
     }
 
-    //проверка заявителя в реестре населения
     static AnswerCityRegister checkCityRegister(StudentOrder so) {
-        AnswerCityRegister ans = new AnswerCityRegister();
-        return  ans;
+        CityRegisterValidator crv = new CityRegisterValidator();
+        return crv.checkCityRegister(so);
     }
 
-    //проверка брака в реестре ЗАГС
     static AnswerWedding checkWedding(StudentOrder so) {
-        AnswerWedding ans = new AnswerWedding();
-        return ans;
+        WeddingValidator wv = new WeddingValidator();
+        return wv.checkWedding(so);
     }
 
-    //проверка детей
     static AnswerChildren checkChildren(StudentOrder so) {
-        AnswerChildren ans = new AnswerChildren();
-        return ans;
+        ChildrenValidator cv = new ChildrenValidator();
+        return cv.checkChildren(so);
     }
 
-    //
     static AnswerStudent checkStudent(StudentOrder so) {
-        AnswerStudent ans = new AnswerStudent();
-        return ans;
+        StudentValidator sv = new StudentValidator();
+        return sv.checkStudent(so);
     }
 
     private static void sendMail(StudentOrder so) {
