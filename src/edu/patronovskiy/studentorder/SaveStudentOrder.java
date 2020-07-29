@@ -1,3 +1,7 @@
+package edu.patronovskiy.studentorder;
+
+import edu.patronovskiy.studentorder.domain.StudentOrder;
+
 /**
  * @author patronovskiy
  * @link https://github.com/patronovskiy

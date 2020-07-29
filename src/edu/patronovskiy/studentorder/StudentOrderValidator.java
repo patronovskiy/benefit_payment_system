@@ -1,3 +1,16 @@
+package edu.patronovskiy.studentorder;
+
+import edu.patronovskiy.studentorder.domain.AnswerChildren;
+import edu.patronovskiy.studentorder.domain.AnswerCityRegister;
+import edu.patronovskiy.studentorder.domain.AnswerStudent;
+import edu.patronovskiy.studentorder.domain.AnswerWedding;
+import edu.patronovskiy.studentorder.domain.StudentOrder;
+import edu.patronovskiy.studentorder.mail.MailSender;
+import edu.patronovskiy.studentorder.validator.ChildrenValidator;
+import edu.patronovskiy.studentorder.validator.CityRegisterValidator;
+import edu.patronovskiy.studentorder.validator.StudentValidator;
+import edu.patronovskiy.studentorder.validator.WeddingValidator;
+
 /**
  * @author patronovskiy
  * @link https://github.com/patronovskiy
@@ -54,7 +67,8 @@ public class StudentOrderValidator {
         return sv.checkStudent(so);
     }
 
-        private static void sendMail (StudentOrder so){
-
-        }
+    static void sendMail (StudentOrder so){
+            new MailSender().sendMail(so);
     }
+
+}
