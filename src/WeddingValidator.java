@@ -5,6 +5,7 @@
 
 public class WeddingValidator {
     //проверка брака в реестре ЗАГС
+
     AnswerWedding checkWedding(StudentOrder so) {
         AnswerWedding ans = new AnswerWedding();
         return ans;

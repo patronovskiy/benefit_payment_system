@@ -14,6 +14,7 @@ public class StudentOrderValidator {
             if (so == null) {
                 break;
             }
+
             AnswerCityRegister cityAnswer = checkCityRegister(so);
             if (!cityAnswer.success) {
                 continue;
@@ -21,9 +22,11 @@ public class StudentOrderValidator {
             AnswerWedding wedAnswer = checkWedding(so);
             AnswerChildren childAnswer = checkChildren(so);
             AnswerStudent studentAnswer = checkStudent(so);
+
             sendMail(so);
         }
     }
+
 
     //проверки
     static StudentOrder readStudentOrder() {
@@ -51,6 +54,7 @@ public class StudentOrderValidator {
         return sv.checkStudent(so);
     }
 
-    private static void sendMail(StudentOrder so) {
+        private static void sendMail (StudentOrder so){
+
+        }
     }
-}

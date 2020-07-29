@@ -9,6 +9,7 @@ public class CityRegisterValidator {
     String login;
     String password;
     //проверка заявителя в реестре населения
+
     AnswerCityRegister checkCityRegister(StudentOrder so) {
         AnswerCityRegister ans = new AnswerCityRegister();
         return  ans;
