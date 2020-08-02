@@ -13,6 +13,7 @@ public class WeddingValidator {
 
     public AnswerWedding checkWedding(StudentOrder so) {
         AnswerWedding ans = new AnswerWedding();
+        System.out.println("Wedding checked");
         return ans;
     }
 }

@@ -17,58 +17,69 @@ import edu.patronovskiy.studentorder.validator.WeddingValidator;
  */
 
 public class StudentOrderValidator {
-    public static void main(String[] args) {
-        checkAll();
+
+    private CityRegisterValidator cityRegisterVal;
+    private WeddingValidator weddingVal;
+    private ChildrenValidator childrenVal;
+    private StudentValidator studentVal;
+    private MailSender mailSender;
+
+    public StudentOrderValidator() {
+        cityRegisterVal = new CityRegisterValidator();
+        weddingVal = new WeddingValidator();
+        childrenVal = new ChildrenValidator();
+        studentVal = new StudentValidator();
+        mailSender = new MailSender();
     }
 
-    private static void checkAll() {
-        StudentOrder so = readStudentOrder();
-        while (true) {
-            if (so == null) {
-                break;
-            }
+    public static void main(String[] args) {
+        StudentOrderValidator sov = new StudentOrderValidator();
+        sov.checkAll();
+    }
 
-            AnswerCityRegister cityAnswer = checkCityRegister(so);
-            if (!cityAnswer.success) {
-                continue;
-            }
-            AnswerWedding wedAnswer = checkWedding(so);
-            AnswerChildren childAnswer = checkChildren(so);
-            AnswerStudent studentAnswer = checkStudent(so);
-
-            sendMail(so);
+    public void checkAll() {
+        StudentOrder[] soArray = readStudentOrders();
+        for(int i = 0; i < soArray.length; i++) {
+            checkOneOrder(soArray[i]);
+            System.out.println(soArray[i].getStudentOrderId() + " is checked\n");
         }
     }
 
+    public StudentOrder[] readStudentOrders() {
+    StudentOrder[] soArray = new StudentOrder[3];
+        for (int i = 0; i < soArray.length; i++) {
+            soArray[i] = SaveStudentOrder.buildStudentOrder(i);
+        }
+    return soArray;
+    }
+
+    public void checkOneOrder(StudentOrder so) {
+        AnswerCityRegister cityAnswer = checkCityRegister(so);
+        AnswerWedding wedAnswer = checkWedding(so);
+        AnswerChildren childAnswer = checkChildren(so);
+        AnswerStudent studentAnswer = checkStudent(so);
+        sendMail(so);
+    }
 
     //проверки
-    static StudentOrder readStudentOrder() {
-        new StudentOrder();
-        return null;
+    public AnswerCityRegister checkCityRegister(StudentOrder so) {
+        return cityRegisterVal.checkCityRegister(so);
     }
 
-    static AnswerCityRegister checkCityRegister(StudentOrder so) {
-        CityRegisterValidator crv = new CityRegisterValidator();
-        return crv.checkCityRegister(so);
+    public AnswerWedding checkWedding(StudentOrder so) {
+        return weddingVal.checkWedding(so);
     }
 
-    static AnswerWedding checkWedding(StudentOrder so) {
-        WeddingValidator wv = new WeddingValidator();
-        return wv.checkWedding(so);
+    public AnswerChildren checkChildren(StudentOrder so) {
+        return childrenVal.checkChildren(so);
     }
 
-    static AnswerChildren checkChildren(StudentOrder so) {
-        ChildrenValidator cv = new ChildrenValidator();
-        return cv.checkChildren(so);
+    public AnswerStudent checkStudent(StudentOrder so) {
+        return studentVal.checkStudent(so);
     }
 
-    static AnswerStudent checkStudent(StudentOrder so) {
-        StudentValidator sv = new StudentValidator();
-        return sv.checkStudent(so);
-    }
-
-    static void sendMail (StudentOrder so){
-            new MailSender().sendMail(so);
+    public void sendMail (StudentOrder so){
+        mailSender.sendMail(so);
     }
 
 }

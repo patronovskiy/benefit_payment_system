@@ -13,6 +13,7 @@ public class ChildrenValidator {
 
     public AnswerChildren checkChildren(StudentOrder so) {
         AnswerChildren ans = new AnswerChildren();
+        System.out.println("Children checked");
         return ans;
     }
 }

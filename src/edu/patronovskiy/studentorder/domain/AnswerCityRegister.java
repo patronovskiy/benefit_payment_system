@@ -6,5 +6,5 @@ package edu.patronovskiy.studentorder.domain;
  */
 
 public class AnswerCityRegister {
-    public boolean success;
+    public boolean success = true;
 }
