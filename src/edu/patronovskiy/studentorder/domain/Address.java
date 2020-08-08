@@ -12,6 +12,17 @@ public class Address {
     private String appartment;  //№ квартиры
     private String postCode;
 
+    public Address() {
+    }
+
+    public Address(String postCode, String street, String building, String extension, String appartment) {
+        this.postCode = postCode;
+        this.street = street;
+        this.building = building;
+        this.extension = extension;
+        this.appartment = appartment;
+    }
+
     public String getStreet() {
         return street;
     }

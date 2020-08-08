@@ -1,6 +1,6 @@
 package edu.patronovskiy.studentorder.validator;
 
-import edu.patronovskiy.studentorder.domain.AnswerWedding;
+import edu.patronovskiy.studentorder.domain.wedding.AnswerWedding;
 import edu.patronovskiy.studentorder.domain.StudentOrder;
 
 /**

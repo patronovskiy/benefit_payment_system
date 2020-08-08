@@ -1,4 +1,4 @@
-package edu.patronovskiy.studentorder.domain;
+package edu.patronovskiy.studentorder.domain.student;
 
 /**
  * @author patronovskiy

@@ -1,6 +1,6 @@
 package edu.patronovskiy.studentorder.validator;
 
-import edu.patronovskiy.studentorder.domain.CityRegisterCheckerResponse;
+import edu.patronovskiy.studentorder.domain.register.CityRegisterResponse;
 import edu.patronovskiy.studentorder.domain.Person;
 import edu.patronovskiy.studentorder.exception.CityRegisterException;
 
@@ -10,7 +10,7 @@ import edu.patronovskiy.studentorder.exception.CityRegisterException;
  */
 
 public class RealCityRegisterChecker implements CityRegisterChecker{
-    public CityRegisterCheckerResponse checkPerson(Person person) throws CityRegisterException {
+    public CityRegisterResponse checkPerson(Person person) throws CityRegisterException {
         return null;    //TODO
     }
 }

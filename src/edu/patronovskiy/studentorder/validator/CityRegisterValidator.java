@@ -1,7 +1,11 @@
 package edu.patronovskiy.studentorder.validator;
 
-import edu.patronovskiy.studentorder.domain.AnswerCityRegister;
-import edu.patronovskiy.studentorder.domain.CityRegisterCheckerResponse;
+import java.util.List;
+import edu.patronovskiy.studentorder.domain.Person;
+import edu.patronovskiy.studentorder.domain.register.AnswerCityRegister;
+import edu.patronovskiy.studentorder.domain.Child;
+import edu.patronovskiy.studentorder.domain.register.AnswerCityRegisterItem;
+import edu.patronovskiy.studentorder.domain.register.CityRegisterResponse;
 import edu.patronovskiy.studentorder.domain.StudentOrder;
 import edu.patronovskiy.studentorder.exception.CityRegisterException;
 
@@ -25,17 +29,25 @@ public class CityRegisterValidator {
         personChecker = new FakeCityRegisterChecker();
     }
 
-    //проверка заявителя в реестре населения
+    //проверка семьи-заявителя в реестре населения
     public AnswerCityRegister checkCityRegister(StudentOrder so) {
+        AnswerCityRegister ans = new AnswerCityRegister();
+
+        ans.addItem(checkPerson(so.getHusband()));
+        ans.addItem(checkPerson(so.getWife()));
+        for (Child child : so.getChildren()) {
+           ans.addItem(checkPerson(child));
+        }
+
+        return  ans;
+    }
+
+    private AnswerCityRegisterItem checkPerson(Person person) {
         try {
-            CityRegisterCheckerResponse hans = personChecker.checkPerson(so.getHusband());
-            CityRegisterCheckerResponse wans = personChecker.checkPerson(so.getWife());
-            CityRegisterCheckerResponse cans = personChecker.checkPerson(so.getChild());
+            CityRegisterResponse cans = personChecker.checkPerson(person);
         } catch (CityRegisterException ex) {
             ex.printStackTrace();
         }
-
-        AnswerCityRegister ans = new AnswerCityRegister();
-        return  ans;
+        return null;    //todo
     }
 }
