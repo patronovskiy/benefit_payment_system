@@ -6,14 +6,19 @@ package edu.patronovskiy.studentorder.exception;
  */
 
 public class CityRegisterException extends Exception {
-    public CityRegisterException() {
-    }
+    private String code;
 
-    public CityRegisterException(final String message) {
+    public CityRegisterException(String code, String message) {
         super(message);
+        this.code = code;
     }
 
-    public CityRegisterException(final String message, final Throwable cause) {
+    public CityRegisterException(String code, String message, Throwable cause) {
         super(message, cause);
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

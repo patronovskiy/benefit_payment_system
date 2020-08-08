@@ -3,6 +3,7 @@ package edu.patronovskiy.studentorder.validator;
 import edu.patronovskiy.studentorder.domain.register.CityRegisterResponse;
 import edu.patronovskiy.studentorder.domain.Person;
 import edu.patronovskiy.studentorder.exception.CityRegisterException;
+import edu.patronovskiy.studentorder.exception.TransportException;
 
 /**
  * @author patronovskiy
@@ -10,5 +11,6 @@ import edu.patronovskiy.studentorder.exception.CityRegisterException;
  */
 
 public interface CityRegisterChecker {
-    CityRegisterResponse checkPerson(Person person) throws CityRegisterException;
+    CityRegisterResponse checkPerson(Person person)
+        throws CityRegisterException, TransportException;
 }
