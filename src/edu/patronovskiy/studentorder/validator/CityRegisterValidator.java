@@ -8,6 +8,7 @@ import edu.patronovskiy.studentorder.domain.register.AnswerCityRegisterItem;
 import edu.patronovskiy.studentorder.domain.register.CityRegisterResponse;
 import edu.patronovskiy.studentorder.domain.StudentOrder;
 import edu.patronovskiy.studentorder.exception.CityRegisterException;
+import edu.patronovskiy.studentorder.exception.TransportException;
 
 /**
  * @author patronovskiy
@@ -15,6 +16,9 @@ import edu.patronovskiy.studentorder.exception.CityRegisterException;
  */
 
 public class CityRegisterValidator {
+
+    //код ошибки, когда мы не смогли добраться до ГРН
+    public static final String IN_CODE = "NO_GRN";
 
     String hostName;
     int port;
@@ -43,11 +47,29 @@ public class CityRegisterValidator {
     }
 
     private AnswerCityRegisterItem checkPerson(Person person) {
+        AnswerCityRegisterItem.CityStatus status = null;
+        AnswerCityRegisterItem.CityError error = null;
         try {
-            CityRegisterResponse cans = personChecker.checkPerson(person);
+            CityRegisterResponse tmp = personChecker.checkPerson(person);
+            status = tmp.isExisting() ?
+                AnswerCityRegisterItem.CityStatus.YES :
+                AnswerCityRegisterItem.CityStatus.NO;
         } catch (CityRegisterException ex) {
             ex.printStackTrace();
+            status = AnswerCityRegisterItem.CityStatus.ERROR;
+            error = new AnswerCityRegisterItem.CityError(ex.getCode(), ex.getMessage());
+        } catch (TransportException ex) {
+            ex.printStackTrace();
+            status = AnswerCityRegisterItem.CityStatus.ERROR;
+            error = new AnswerCityRegisterItem.CityError(IN_CODE, ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            status = AnswerCityRegisterItem.CityStatus.ERROR;
+            error = new AnswerCityRegisterItem.CityError(IN_CODE, ex.getMessage());
         }
-        return null;    //todo
+
+        AnswerCityRegisterItem answer = new AnswerCityRegisterItem(status, person, error);
+
+        return answer;    //todo
     }
 }

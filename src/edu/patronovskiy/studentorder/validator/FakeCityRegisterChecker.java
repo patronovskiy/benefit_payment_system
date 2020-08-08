@@ -5,6 +5,7 @@ import edu.patronovskiy.studentorder.domain.Child;
 import edu.patronovskiy.studentorder.domain.register.CityRegisterResponse;
 import edu.patronovskiy.studentorder.domain.Person;
 import edu.patronovskiy.studentorder.exception.CityRegisterException;
+import edu.patronovskiy.studentorder.exception.TransportException;
 
 /**
  * @author patronovskiy
@@ -20,8 +21,10 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
     private static final String BAD_2 = "2001";
     private static final String ERROR_1 = "1002";
     private static final String ERROR_2 = "2002";
+    private static final String ERROR_T_1 = "1003";
+    private static final String ERROR_T_2 = "2003";
 
-    public CityRegisterResponse checkPerson(Person person) throws CityRegisterException {
+    public CityRegisterResponse checkPerson(Person person) throws CityRegisterException, TransportException {
         CityRegisterResponse result = new CityRegisterResponse();
 
         if (person instanceof Adult) {
@@ -34,7 +37,10 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
                 result.setExisting(false);
             }
             if (t.getPassportSeria().equals(ERROR_1) || t.getPassportSeria().equals(ERROR_2)) {
-                throw new CityRegisterException("Fake Error");  //todo
+                throw new CityRegisterException("1", "Fake GRN Error");  //todo
+            }
+            if (t.getPassportSeria().equals(ERROR_T_1) || t.getPassportSeria().equals(ERROR_T_2)) {
+                throw new TransportException("Fake Transport Error");  //todo
             }
         }
 
