@@ -6,7 +6,7 @@ package edu.patronovskiy.studentorder.domain;
  */
 
 public class Address {
-    private String street;
+    private Street street;
     private String building;
     private String extension;   //№ корпуса дома
     private String appartment;  //№ квартиры
@@ -15,7 +15,7 @@ public class Address {
     public Address() {
     }
 
-    public Address(String postCode, String street, String building, String extension, String appartment) {
+    public Address(String postCode, Street street, String building, String extension, String appartment) {
         this.postCode = postCode;
         this.street = street;
         this.building = building;
@@ -23,11 +23,11 @@ public class Address {
         this.appartment = appartment;
     }
 
-    public String getStreet() {
+    public Street getStreet() {
         return street;
     }
 
-    public void setStreet(final String street) {
+    public void setStreet(Street street) {
         this.street = street;
     }
 
