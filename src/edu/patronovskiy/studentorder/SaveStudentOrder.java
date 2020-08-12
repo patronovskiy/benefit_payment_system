@@ -1,5 +1,9 @@
 package edu.patronovskiy.studentorder;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 import edu.patronovskiy.studentorder.domain.Address;
 import edu.patronovskiy.studentorder.domain.Adult;
@@ -12,11 +16,21 @@ import edu.patronovskiy.studentorder.domain.StudentOrder;
  */
 
 public class SaveStudentOrder {
-    public static void main(String[] args) {
-        StudentOrder studentOrder = new StudentOrder();
+    public static void main(String[] args) throws Exception { //todo
+        //регистрация драйвера в подсистеме jdbc, необязательно с версии спецификации 4.0
+        //Class.forName("org.postgresql.Driver");
+        Connection con = DriverManager.getConnection(
+            "jdbc:postgresql://localhost:5432/jc_student",
+            "postgres", "Postgresql72");
 
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM jc_street");
+        while(rs.next()) {
+            System.out.println(rs.getLong(1) + " : " + rs.getString(2));
+        }
 
-        long ans = saveStudentOrder(studentOrder);
+//        StudentOrder studentOrder = new StudentOrder();
+//        long ans = saveStudentOrder(studentOrder);
 
     }
 
