@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
+import edu.patronovskiy.studentorder.config.Config;
 import edu.patronovskiy.studentorder.domain.Street;
 import edu.patronovskiy.studentorder.exception.DaoException;
 
@@ -25,8 +26,9 @@ public class DictionaryDaoImpl implements DictionaryDao {
         //регистрация драйвера в подсистеме jdbc, необязательно с версии спецификации 4.0
         //Class.forName("org.postgresql.Driver");
         Connection con = DriverManager.getConnection(
-            "jdbc:postgresql://localhost:5432/jc_student",
-            "postgres", "Postgresql72");    //todo установить эти параметры
+            Config.getProperty(Config.DB_URL),
+            Config.getProperty(Config.DB_LOGIN),
+            Config.getProperty(Config.DB_PASSWORD));    //todo установить эти параметры
         return con;
     }
 
