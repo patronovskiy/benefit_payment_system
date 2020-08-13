@@ -2,12 +2,14 @@ package edu.patronovskiy.studentorder.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import edu.patronovskiy.studentorder.domain.Street;
+import edu.patronovskiy.studentorder.exception.DaoException;
 
 /**
  * @author patronovskiy
@@ -15,7 +17,9 @@ import edu.patronovskiy.studentorder.domain.Street;
  */
 
 //DAO - Data access object
-public class DirectoryDao {
+public class DictionaryDaoImpl implements DictionaryDao {
+
+    private static final String GET_STREET = "SELECT street_code, street_name FROM jc_street where UPPER(street_name) like UPPER(?)";
 
     private Connection getConnection() throws SQLException {
         //регистрация драйвера в подсистеме jdbc, необязательно с версии спецификации 4.0
@@ -26,15 +30,21 @@ public class DirectoryDao {
         return con;
     }
 
-    public List<Street> findStreets(String pattern) throws Exception {    //todo обработка ошибки
+    public List<Street> findStreets(String pattern) throws DaoException {    //todo обработка ошибки
         List<Street> result = new LinkedList<>();
-        Connection con = getConnection();
-        Statement stmt = con.createStatement();
-        String sql = "SELECT street_code, street_name FROM jc_street where UPPER(street_name) like UPPER('%" + pattern +"%')";
-        ResultSet rs = stmt.executeQuery(sql);
-        while(rs.next()) {
-          result.add(new Street(rs.getLong("street_code"), rs.getString("street_name")));
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(GET_STREET)) {
+
+            stmt.setString(1, "%" + pattern + "%");
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                result.add(new Street(rs.getLong("street_code"), rs.getString("street_name")));
+            }
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
         }
+
         return result;
     }
 }

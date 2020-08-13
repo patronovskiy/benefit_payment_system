@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.List;
+import edu.patronovskiy.studentorder.dao.DictionaryDaoImpl;
 import edu.patronovskiy.studentorder.domain.Address;
 import edu.patronovskiy.studentorder.domain.Adult;
 import edu.patronovskiy.studentorder.domain.Child;
@@ -18,7 +20,10 @@ import edu.patronovskiy.studentorder.domain.StudentOrder;
 
 public class SaveStudentOrder {
     public static void main(String[] args) throws Exception { //todo
-
+        List<Street> d = new DictionaryDaoImpl().findStreets("sec");
+        for (Street s : d) {
+            System.out.println(s.getStreetName());
+        }
 //        StudentOrder studentOrder = new StudentOrder();
 //        long ans = saveStudentOrder(studentOrder);
 
