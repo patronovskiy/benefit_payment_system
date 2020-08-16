@@ -8,10 +8,10 @@ import java.time.LocalDate;
  */
 
 public class Adult extends Person {
-    private  String passportSeria;
+    private String passportSeria;
     private String passportNumber;
     private LocalDate issueDate;    //дата выдачи паспорта
-    private String issueDepartment; //место выдачи
+    private PassportOffice issueDepartment; //место выдачи
     private String university;
     private String studentId;   //номер студенческого билета
 
@@ -46,11 +46,11 @@ public class Adult extends Person {
         this.issueDate = issueDate;
     }
 
-    public String getIssueDepartment() {
+    public PassportOffice getIssueDepartment() {
         return issueDepartment;
     }
 
-    public void setIssueDepartment(final String issueDepartment) {
+    public void setIssueDepartment(PassportOffice issueDepartment) {
         this.issueDepartment = issueDepartment;
     }
 

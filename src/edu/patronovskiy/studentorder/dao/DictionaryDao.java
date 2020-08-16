@@ -1,6 +1,8 @@
 package edu.patronovskiy.studentorder.dao;
 
 import java.util.List;
+import edu.patronovskiy.studentorder.domain.PassportOffice;
+import edu.patronovskiy.studentorder.domain.RegisterOffice;
 import edu.patronovskiy.studentorder.domain.Street;
 import edu.patronovskiy.studentorder.exception.DaoException;
 
@@ -11,4 +13,6 @@ import edu.patronovskiy.studentorder.exception.DaoException;
 
 public interface DictionaryDao {
     List<Street> findStreets(String pattern) throws DaoException;
+    List<PassportOffice> findPassportOffices(String areaId) throws DaoException;
+    List<RegisterOffice> findRegisterOffices(String areaId) throws DaoException;
 }
