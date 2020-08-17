@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import edu.patronovskiy.studentorder.config.Config;
+import edu.patronovskiy.studentorder.domain.CountryArea;
 import edu.patronovskiy.studentorder.domain.PassportOffice;
 import edu.patronovskiy.studentorder.domain.RegisterOffice;
 import edu.patronovskiy.studentorder.domain.Street;
@@ -28,6 +29,8 @@ public class DictionaryDaoImpl implements DictionaryDao {
     private static final String GET_PASSPORT = "SELECT * FROM jc_passport_office where p_office_area_id = ?";
 
     private static final String GET_REGISTER = "SELECT * FROM jc_register_office where r_office_area_id = ?";
+
+    private static final String GET_AREA = "SELECT * FROM jc_country_struct WHERE area_id like ? and area_id <> ?";
 
     private Connection getConnection() throws SQLException {
         //регистрация драйвера в подсистеме jdbc, необязательно с версии спецификации 4.0
@@ -97,5 +100,42 @@ public class DictionaryDaoImpl implements DictionaryDao {
             throw new DaoException(ex);
         }
         return result;
+    }
+
+    @Override
+    public List<CountryArea> findAreas(final String areaId) throws DaoException {
+        List<CountryArea> result = new LinkedList<>();
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(GET_AREA)) {
+
+            String param1 = buildParam(areaId);
+            String param2 = areaId;
+
+            stmt.setString(1, param1);
+            stmt.setString(2, param2);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                result.add(new CountryArea(
+                    rs.getString("area_id"),
+                    rs.getString("area_name")));
+            }
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+        return result;
+    }
+
+    private String buildParam(final String areaId) throws SQLException{
+        if(areaId == null || areaId.trim().isEmpty()) {
+            return "__0000000000";
+        } else if (areaId.endsWith("0000000000")) {
+            return areaId.substring(0, 2) + "___0000000";
+        } else if (areaId.endsWith("0000000")) {
+            return areaId.substring(0, 5) + "___0000";
+        } else if (areaId.endsWith("0000")){
+            return areaId.substring(0, 8) + "____";
+        }
+        throw new SQLException("Invalid parameter 'areaId:' " + areaId);
     }
 }
