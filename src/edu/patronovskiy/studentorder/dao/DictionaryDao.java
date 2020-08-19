@@ -12,6 +12,7 @@ import edu.patronovskiy.studentorder.exception.DaoException;
  * @link https://github.com/patronovskiy
  */
 
+//DAO - Data access object
 public interface DictionaryDao {
     List<Street> findStreets(String pattern) throws DaoException;
     List<PassportOffice> findPassportOffices(String areaId) throws DaoException;
