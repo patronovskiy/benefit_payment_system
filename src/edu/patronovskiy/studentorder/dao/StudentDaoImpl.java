@@ -3,6 +3,7 @@ package edu.patronovskiy.studentorder.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import edu.patronovskiy.studentorder.config.Config;
@@ -45,8 +46,11 @@ public class StudentDaoImpl implements StudentOrderDao {
 
     @Override
     public Long saveStudentOrder(final StudentOrder so) throws DaoException {
+        long result = -1L;
+
         try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(INSERT_ORDER)) {
+             //делаем запрос в бд и сразу оттуда сохраняем в массив данные из колонки student_order_id
+             PreparedStatement stmt = con.prepareStatement(INSERT_ORDER, new String[] {"student_order_id"})) {
 
             //Header
             stmt.setInt(1, StudentOrderStatus.START.ordinal());
@@ -93,9 +97,16 @@ public class StudentDaoImpl implements StudentOrderDao {
 
             stmt.executeUpdate();
 
+            //возвращает данные из бд
+            ResultSet gKRs = stmt.getGeneratedKeys();
+            if(gKRs.next()) {
+                result = gKRs.getLong(1);
+            }
+            gKRs.close();
+
         } catch (SQLException ex) {
             throw new DaoException(ex);
         }
-        return 0L;  //todo return
+        return result;  //return id of student order
     }
 }
