@@ -12,7 +12,7 @@ public class Adult extends Person {
     private String passportNumber;
     private LocalDate issueDate;    //дата выдачи паспорта
     private PassportOffice issueDepartment; //место выдачи
-    private String university;
+    private University university;
     private String studentId;   //номер студенческого билета
 
     public Adult() {
@@ -54,11 +54,11 @@ public class Adult extends Person {
         this.issueDepartment = issueDepartment;
     }
 
-    public String getUniversity() {
+    public University getUniversity() {
         return university;
     }
 
-    public void setUniversity(final String university) {
+    public void setUniversity(final University university) {
         this.university = university;
     }
 

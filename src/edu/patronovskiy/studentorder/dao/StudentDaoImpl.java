@@ -29,20 +29,34 @@ public class StudentDaoImpl implements StudentOrderDao {
             "h_passport_seria, h_passport_number, " +
             "h_passport_date, h_passport_office_id, " +
             "h_post_index, h_street_code, h_building, h_extension, h_appartment, " +
+            "h_university_id, h_student_number," +
             "w_sur_name, w_name, w_patronymic, w_date_of_birth, " +
-            "w_passport_seria, w_passport_number, w_passport_date, " +
-            "w_passport_office_id, " +
+            "w_passport_seria, w_passport_number, " +
+            "w_passport_date, w_passport_office_id, " +
             "w_post_index, w_street_code, w_building, w_extension, w_appartment, " +
+            "w_university_id, w_student_number," +
             "certificate_id, register_office_id, marriage_date)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, " +
+            "?, ?, ?, ?, " +
+            "?, ?, " +
+            "?, ?, " +
+            "?, ?, ?, ?, ?, " +
+            "?, ?, " +
+            "?, ?, ?, ?, " +
+            "?, ?, " +
+            "?, ?, " +
+            "?, ?, ?, ?, ?, " +
+            "?, ?, " +
+            "?, ?, ?);";
 
     private static final String INSERT_CHILD =
         "INSERT INTO jc_student_child(" +
         "student_order_id, c_sur_name, c_name, c_patronymic, " +
         "c_date_of_birth, c_certificate_number, c_certificate_date, c_register_office_id, " +
         "c_post_index, c_street_code, c_building, c_extension, c_appartment)" +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "VALUES (?, ?, ?, ?, " +
+            "?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?);";
 
     //TODO refactoring - make one method
     private Connection getConnection() throws SQLException {
@@ -71,12 +85,12 @@ public class StudentDaoImpl implements StudentOrderDao {
 
                 //Husband and wife
                 setParamsForAdult(stmt, 3, so.getHusband());
-                setParamsForAdult(stmt, 16, so.getWife());
+                setParamsForAdult(stmt, 18, so.getWife());
 
                 //Marriage
-                stmt.setString(29, so.getMarriageCertificateId());
-                stmt.setLong(30, so.getMarriageOffice().getOfficeId());
-                stmt.setDate(31, java.sql.Date.valueOf(so.getMarriageDate()));
+                stmt.setString(33, so.getMarriageCertificateId());
+                stmt.setLong(34, so.getMarriageOffice().getOfficeId());
+                stmt.setDate(35, java.sql.Date.valueOf(so.getMarriageDate()));
 
                 stmt.executeUpdate();
 
@@ -130,6 +144,8 @@ public class StudentDaoImpl implements StudentOrderDao {
         stmt.setDate(start + 6, java.sql.Date.valueOf(adult.getIssueDate()));
         stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
         setParamsForAddress(stmt, start + 8, adult);
+        stmt.setLong(start + 13, adult.getUniversity().getUniversityId());
+        stmt.setString(start + 14, adult.getStudentId());
     }
 
     private void setParamsForPerson(PreparedStatement stmt, int start, Person person)

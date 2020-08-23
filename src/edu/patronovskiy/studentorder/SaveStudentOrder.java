@@ -17,6 +17,7 @@ import edu.patronovskiy.studentorder.domain.PassportOffice;
 import edu.patronovskiy.studentorder.domain.RegisterOffice;
 import edu.patronovskiy.studentorder.domain.Street;
 import edu.patronovskiy.studentorder.domain.StudentOrder;
+import edu.patronovskiy.studentorder.domain.University;
 
 /**
  * @author patronovskiy
@@ -95,6 +96,9 @@ public class SaveStudentOrder {
         husband.setIssueDepartment(po1);
         husband.setStudentId("" + (100000 + id));
         husband.setAddress(address);
+        husband.setUniversity(new University(2L, ""));
+        husband.setStudentId("HH12345");
+
         // Жена
         Adult wife = new Adult("Петрова", "Вероника", "Алекссевна", LocalDate.of(1998, 3, 12));
         wife.setPassportSeria("" + (2000 + id));
@@ -104,6 +108,9 @@ public class SaveStudentOrder {
         wife.setIssueDepartment(po2);
         wife.setStudentId("" + (200000 + id));
         wife.setAddress(address);
+        wife.setUniversity(new University(1L, ""));
+        wife.setStudentId("WW6789");
+
         // Ребенок
         Child child1 = new Child("Петрова", "Ирина", "Викторовна", LocalDate.of(2018, 6, 29));
         child1.setCertificateNumber("" + (300000 + id));
@@ -111,6 +118,7 @@ public class SaveStudentOrder {
         RegisterOffice ro2 = new RegisterOffice(2L, "", "");
         child1.setIssueDepartment(ro2);
         child1.setAddress(address);
+
         // Ребенок
         Child child2 = new Child("Петрова", "Мария", "Викторовна", LocalDate.of(2019, 6, 29));
         child2.setCertificateNumber("" + (400000 + id));
