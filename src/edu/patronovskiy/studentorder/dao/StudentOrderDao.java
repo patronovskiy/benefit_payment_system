@@ -1,5 +1,6 @@
 package edu.patronovskiy.studentorder.dao;
 
+import java.util.List;
 import edu.patronovskiy.studentorder.domain.StudentOrder;
 import edu.patronovskiy.studentorder.exception.DaoException;
 
@@ -11,4 +12,5 @@ import edu.patronovskiy.studentorder.exception.DaoException;
 //DAO - Data access object
 public interface StudentOrderDao {
     Long saveStudentOrder(StudentOrder so) throws DaoException;
+    List<StudentOrder> getStudentOrders() throws DaoException;
 }
