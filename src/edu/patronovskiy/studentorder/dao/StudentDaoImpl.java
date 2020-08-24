@@ -29,6 +29,7 @@ import edu.patronovskiy.studentorder.exception.DaoException;
 
 public class StudentDaoImpl implements StudentOrderDao {
 
+    //запросы в БД
     private static final String INSERT_ORDER =
         "INSERT INTO jc_student_order(" +
             "student_order_status, student_order_date, " +
@@ -66,10 +67,14 @@ public class StudentDaoImpl implements StudentOrderDao {
             "?, ?, ?, ?, ?);";
 
     private static final String SELECT_ORDERS =
-        "SELECT * FROM jc_student_order " +
-        "WHERE student_order_status = 0 " +
-        "ORDER BY student_order_date";
+        "SELECT so.*, ro.r_office_area_id, ro.r_office_name " +
+            "FROM jc_student_order as so " +
+            "INNER JOIN jc_register_office as ro " +
+            "ON ro.r_office_id = so.register_office_id " +
+            "WHERE student_order_status = 0 order by student_order_date";
 
+
+    //подключение к БД
     //TODO refactoring - make one method
     private Connection getConnection() throws SQLException {
         Connection con = DriverManager.getConnection(
@@ -80,6 +85,8 @@ public class StudentDaoImpl implements StudentOrderDao {
         return con;
     }
 
+
+    //сохранение данных в БД
     @Override
     public Long saveStudentOrder(final StudentOrder so) throws DaoException {
         long result = -1L;
@@ -128,6 +135,58 @@ public class StudentDaoImpl implements StudentOrderDao {
         return result;  //return id of student order
     }
 
+    private void saveChildren(Connection con, StudentOrder so, Long soId) throws SQLException {
+        try(PreparedStatement stmt = con.prepareStatement(INSERT_CHILD)) {
+            for(Child child : so.getChildren()) {
+                stmt.setLong(1, soId);
+                setParamsForChild(stmt, child);
+                stmt.addBatch();    //добавляем команды в пакет - как буферизация
+            }
+            stmt.executeBatch();    //исполняем команды всего пакета разом.
+                                    // возвращает массив с кол-вом задейств строк
+        }
+    }
+
+    private void setParamsForChild(PreparedStatement stmt, Child child) throws SQLException {
+        setParamsForPerson(stmt, 2, child);
+        stmt.setString(6, child.getCertificateNumber());
+        stmt.setDate(7, java.sql.Date.valueOf(child.getIssueDate()));
+        stmt.setLong(8, child.getIssueDepartment().getOfficeId());
+        setParamsForAddress(stmt, 9, child);
+    }
+
+    private void setParamsForAdult(PreparedStatement stmt, int start, Adult adult)
+        throws SQLException {
+        setParamsForPerson(stmt, start, adult);
+        stmt.setString(start + 4, adult.getPassportSeria());
+        stmt.setString(start + 5, adult.getPassportNumber());
+        stmt.setDate(start + 6, java.sql.Date.valueOf(adult.getIssueDate()));
+        stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
+        setParamsForAddress(stmt, start + 8, adult);
+        stmt.setLong(start + 13, adult.getUniversity().getUniversityId());
+        stmt.setString(start + 14, adult.getStudentId());
+    }
+
+    private void setParamsForPerson(PreparedStatement stmt, int start, Person person)
+        throws SQLException {
+        stmt.setString(start, person.getSurName());
+        stmt.setString(start + 1, person.getGivenName());
+        stmt.setString(start + 2, person.getPatronymic());
+        stmt.setDate(start + 3, java.sql.Date.valueOf(person.getDateOfBirth()));
+    }
+
+    private void setParamsForAddress(final PreparedStatement stmt, final int start, final Person person)
+        throws SQLException {
+        Address address = person.getAddress();
+        stmt.setString(start, address.getPostCode());
+        stmt.setLong(start + 1, address.getStreet().getStreetCode());
+        stmt.setString(start + 2, address.getBuilding());
+        stmt.setString(start + 3, address.getExtension());
+        stmt.setString(start + 4, address.getAppartment());
+    }
+
+
+    //получение данных из БД
     @Override
     public List<StudentOrder> getStudentOrders() throws DaoException {
         List<StudentOrder> result = new LinkedList<>();
@@ -195,7 +254,6 @@ public class StudentDaoImpl implements StudentOrderDao {
 //        private String studentId;
     }
 
-    //метод, заполняющий поля заявки в соответвии с данными из БД
     private void fillStudentOrder(ResultSet rs, StudentOrder so) throws SQLException {
         so.setStudentOrderId(rs.getLong("student_order_id"));
         so.setStudentOrderDate(rs.getTimestamp("student_order_date").toLocalDateTime());
@@ -205,58 +263,9 @@ public class StudentDaoImpl implements StudentOrderDao {
     private void fillMarriage(final ResultSet rs, final StudentOrder so) throws SQLException {
         so.setMarriageCertificateId(rs.getString("certificate_id"));
         so.setMarriageDate(rs.getDate("marriage_date").toLocalDate());
-
-        RegisterOffice ro = new RegisterOffice(rs.getLong("register_office_id"), "", "");
+        String areaId = rs.getString("r_office_area_id");
+        String officeName = rs.getString("r_office_name");
+        RegisterOffice ro = new RegisterOffice(rs.getLong("register_office_id"), areaId, officeName);
         so.setMarriageOffice(ro);
-    }
-
-    private void saveChildren(Connection con, StudentOrder so, Long soId) throws SQLException {
-        try(PreparedStatement stmt = con.prepareStatement(INSERT_CHILD)) {
-            for(Child child : so.getChildren()) {
-                stmt.setLong(1, soId);
-                setParamsForChild(stmt, child);
-                stmt.addBatch();    //добавляем команды в пакет - как буферизация
-            }
-            stmt.executeBatch();    //исполняем команды всего пакета разом.
-                                    // возвращает массив с кол-вом задейств строк
-        }
-    }
-
-    private void setParamsForChild(PreparedStatement stmt, Child child) throws SQLException {
-        setParamsForPerson(stmt, 2, child);
-        stmt.setString(6, child.getCertificateNumber());
-        stmt.setDate(7, java.sql.Date.valueOf(child.getIssueDate()));
-        stmt.setLong(8, child.getIssueDepartment().getOfficeId());
-        setParamsForAddress(stmt, 9, child);
-    }
-
-    private void setParamsForAdult(PreparedStatement stmt, int start, Adult adult)
-        throws SQLException {
-        setParamsForPerson(stmt, start, adult);
-        stmt.setString(start + 4, adult.getPassportSeria());
-        stmt.setString(start + 5, adult.getPassportNumber());
-        stmt.setDate(start + 6, java.sql.Date.valueOf(adult.getIssueDate()));
-        stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
-        setParamsForAddress(stmt, start + 8, adult);
-        stmt.setLong(start + 13, adult.getUniversity().getUniversityId());
-        stmt.setString(start + 14, adult.getStudentId());
-    }
-
-    private void setParamsForPerson(PreparedStatement stmt, int start, Person person)
-        throws SQLException {
-        stmt.setString(start, person.getSurName());
-        stmt.setString(start + 1, person.getGivenName());
-        stmt.setString(start + 2, person.getPatronymic());
-        stmt.setDate(start + 3, java.sql.Date.valueOf(person.getDateOfBirth()));
-    }
-
-    private void setParamsForAddress(final PreparedStatement stmt, final int start, final Person person)
-        throws SQLException {
-        Address address = person.getAddress();
-        stmt.setString(start, address.getPostCode());
-        stmt.setLong(start + 1, address.getStreet().getStreetCode());
-        stmt.setString(start + 2, address.getBuilding());
-        stmt.setString(start + 3, address.getExtension());
-        stmt.setString(start + 4, address.getAppartment());
     }
 }
