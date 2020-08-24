@@ -67,11 +67,15 @@ public class StudentDaoImpl implements StudentOrderDao {
             "?, ?, ?, ?, ?);";
 
     private static final String SELECT_ORDERS =
-        "SELECT so.*, ro.r_office_area_id, ro.r_office_name " +
+        "SELECT so.*, " +
+            "ro.r_office_area_id, ro.r_office_name, " +
+            "po_h.p_office_area_id as h_p_office_area_id, po_h.p_office_name as h_p_office_name, " +
+            "po_w.p_office_area_id as w_p_office_area_id, po_w.p_office_name as w_p_office_name " +
             "FROM jc_student_order as so " +
-            "INNER JOIN jc_register_office as ro " +
-            "ON ro.r_office_id = so.register_office_id " +
-            "WHERE student_order_status = 0 order by student_order_date";
+            "INNER JOIN jc_register_office as ro ON ro.r_office_id = so.register_office_id " +
+            "INNER JOIN jc_passport_office as po_h ON po_h.p_office_id = so.h_passport_office_id " +
+            "INNER JOIN jc_passport_office as po_w ON po_w.p_office_id = so.w_passport_office_id " +
+            "WHERE student_order_status = 0 ORDER BY student_order_date";
 
 
     //подключение к БД
@@ -227,7 +231,10 @@ public class StudentDaoImpl implements StudentOrderDao {
         adult.setPassportNumber(rs.getString(prefix + "passport_number"));
         adult.setIssueDate(rs.getDate(prefix + "passport_date").toLocalDate());
 
-        PassportOffice po = new PassportOffice(rs.getLong(prefix + "passport_office_id"), "", "");
+        Long passportOfficeId = rs.getLong(prefix + "passport_office_id");
+        String passportOfficeAreaId = rs.getString(prefix + "p_office_area_id");
+        String passportOfficeName = rs.getString(prefix + "p_office_name");
+        PassportOffice po = new PassportOffice(passportOfficeId, passportOfficeAreaId, passportOfficeName);
         adult.setIssueDepartment(po);
 
         Address address = new Address();
