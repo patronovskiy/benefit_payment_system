@@ -75,7 +75,7 @@ public class StudentDaoImpl implements StudentOrderDao {
             "INNER JOIN jc_register_office as ro ON ro.r_office_id = so.register_office_id " +
             "INNER JOIN jc_passport_office as po_h ON po_h.p_office_id = so.h_passport_office_id " +
             "INNER JOIN jc_passport_office as po_w ON po_w.p_office_id = so.w_passport_office_id " +
-            "WHERE student_order_status = 0 ORDER BY student_order_date";
+            "WHERE student_order_status = ? ORDER BY student_order_date";
 
 
     //подключение к БД
@@ -198,6 +198,9 @@ public class StudentDaoImpl implements StudentOrderDao {
         try(Connection con = getConnection();
             PreparedStatement stmt = con.prepareStatement(SELECT_ORDERS)) {
 
+            //устанавливаем требуемый статус обрабатываемых заявок
+            stmt.setInt(1, StudentOrderStatus.START.ordinal());
+            //выполняем запрос и получаем заявки из бд
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
                 StudentOrder so = new StudentOrder();
