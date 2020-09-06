@@ -78,7 +78,7 @@ public class StudentDaoImpl implements StudentOrderDao {
         "INNER JOIN jc_register_office as ro ON ro.r_office_id = so.register_office_id " +
         "INNER JOIN jc_passport_office as po_h ON po_h.p_office_id = so.h_passport_office_id " +
         "INNER JOIN jc_passport_office as po_w ON po_w.p_office_id = so.w_passport_office_id " +
-        "WHERE student_order_status = ? ORDER BY student_order_date";
+        "WHERE student_order_status = ? ORDER BY student_order_date LIMIT ?";
 
     private static final String SELECT_CHILD =
         "SELECT soc.*, ro.r_office_area_id, ro.r_office_name " +
@@ -101,7 +101,8 @@ public class StudentDaoImpl implements StudentOrderDao {
             "INNER JOIN jc_passport_office as po_w ON po_w.p_office_id = so.w_passport_office_id " +
             "INNER JOIN jc_student_child as soc ON soc.student_order_id = so.student_order_id " +
             "INNER JOIN jc_register_office as ro_c ON soc.c_register_office_id = ro_c.r_office_id " +
-            "WHERE student_order_status = ? ORDER BY student_order_date";
+            "WHERE student_order_status = ? ORDER BY student_order_date " +
+            "LIMIT ?";
 
 
     //подключение к БД
@@ -220,7 +221,7 @@ public class StudentDaoImpl implements StudentOrderDao {
     @Override
     public List<StudentOrder> getStudentOrders() throws DaoException {
         return getStudentOrdersOneSelect();
-        //return getStudentOrdersTwoSelect();
+//        return getStudentOrdersTwoSelect();
     }
 
 
@@ -235,8 +236,13 @@ public class StudentDaoImpl implements StudentOrderDao {
 
             //устанавливаем требуемый статус обрабатываемых заявок
             stmt.setInt(1, StudentOrderStatus.START.ordinal());
+            //устанавливаем лимит на количество вытаскиваемых записей
+            int limit = Integer.parseInt(Config.getProperty(Config.DB_LIMIT));
+            stmt.setInt(2, limit);
             //выполняем запрос и получаем заявки из бд
             ResultSet rs = stmt.executeQuery();
+            //счетчик обработанных записей
+            int counter = 0;
             while(rs.next()) {
                 Long soId = rs.getLong("student_order_id");
                 //проверяем, что этой заявки еще нет в мапе, если нет - создаем
@@ -248,6 +254,14 @@ public class StudentDaoImpl implements StudentOrderDao {
                 }
                 StudentOrder so = maps.get(soId);
                 so.addChild(fillChild(rs));
+                counter++;
+            }
+
+            //проверяем, не достигло ли количество обработанных записей установленного лимита
+            //если достигло - отбросить запись по последней семье,
+            // чтобы предотвратить разделение записей по одной и той же семье
+            if(counter >= limit) {
+                result.remove(result.size() - 1);
             }
             rs.close();
 
@@ -265,6 +279,8 @@ public class StudentDaoImpl implements StudentOrderDao {
 
             //устанавливаем требуемый статус обрабатываемых заявок
             stmt.setInt(1, StudentOrderStatus.START.ordinal());
+            //устанавливаем лимит на количество вытаскиваемых записей
+            stmt.setInt(2, Integer.parseInt(Config.getProperty(Config.DB_LIMIT)));
             //выполняем запрос и получаем заявки из бд
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
