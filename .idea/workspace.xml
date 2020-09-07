@@ -7,6 +7,9 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -22,6 +25,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../benefit_payment_system" />
@@ -122,10 +126,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1481" height="246" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1599494490666" />
-    <state x="416" y="200" key="com.intellij.ide.util.TipDialog" timestamp="1599491852782">
+    <state x="416" y="200" key="com.intellij.ide.util.TipDialog" timestamp="1599494596142">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="416" y="200" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1599491852782" />
+    <state x="416" y="200" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1599494596142" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
